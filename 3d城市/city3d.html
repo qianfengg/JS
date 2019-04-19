@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        body,html{
+            height: 100%;
+            background-color: skyblue;
+            overflow: hidden;
+            perspective: 800px;
+        }
+        #city3d{
+            position: absolute;
+            background-color: #ccc;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            transform: rotateX(60deg) rotateZ(-120deg);
+            transform-origin: center center;
+            animation: anim 50s linear infinite;
+            cursor: pointer;
+        }
+        @keyframes anim {
+            from{transform: rotateX(60deg) rotateZ(-120deg);}
+            to{transform: rotateX(60deg) rotateZ(240deg);}
+        }
+        div,b,i{
+            position: absolute;
+            transform-style: preserve-3d;
+            transform-origin: 0 0;
+        }
+        b,i{
+            height: 100%;
+        }
+        div.building > b{
+            transform: rotateX(90deg);
+            background-color: rgba(176,208,233,.9);
+        }
+        div.building > b > b{
+            transform: rotateY(90deg);
+            background-color: rgba(128,174,197,.9);
+        }
+        div.building > b > b > b{
+            transform-origin: right top;
+            right: 0;
+            transform: rotateY(90deg);
+            background-color: rgba(176,208,233,.9);
+        }
+        div.building > b > b > b > b{
+            transform: rotateY(90deg);
+            background-color: rgba(128,174,197,.9);
+        }
+        div.building > b > b > b > b > i{
+            top: 99%;
+            transform: rotateX(90deg);
+            background-color: #d0e4ef;
+        }
+        div.a b{
+            background-image: url("./images/1.png");
+        }
+        div.b b{
+            background-image: url("./images/2.png");
+        }
+        div.c b{
+            background-image: url("./images/3.png");
+        }
+        div.d b{
+            background-image: url("./images/4.png");
+        }
+        div.e b{
+            background-image: url("./images/5.png");
+        }
+    </style>
+</head>
+<body>
+    <script>
+        let app = (function(){
+            let random = (min,max) => Math.random() * (max - min) + min;
+            let typeArr = ["a","b","c","d","e"];
+            class City3d{
+                constructor(base){
+                    this.base = base;
+                    this.spacing = 80;
+                }
+                build(){
+                    this.buildArea();
+                    for (let i = 0; i < this.base; i++) {
+                        for (let j = 0; j < this.base; j++) {
+                            this.buildBuilding(i * this.spacing , j * this.spacing);
+                        }
+                    }
+
+                }
+                buildArea(){
+                    let that = this;
+                    if(!this.city3d){
+                        let oArea = document.createElement("div");
+                        oArea.id = "city3d";
+                        oArea.style.width = oArea.style.height = this.base * this.spacing + "px";
+                        oArea.onclick = function(){
+                            that.build();
+                        }
+                        document.body.appendChild(oArea);
+                        this.city3d = oArea;
+                    }else{
+                        this.city3d.innerHTML = "";
+                    }
+                }
+                buildBuilding(l,t){
+                    let randomH = random(50,200);
+                    let randomW1 = random(20,40);
+                    let randomW2 = random(30,50);
+                    let oBuilding = document.createElement("div");
+                    oBuilding.classList.add("building");
+                    let type = typeArr[Math.random()*typeArr.length | 0];
+                    oBuilding.classList.add(type);
+                    oBuilding.style.height = randomH + "px";
+                    oBuilding.style.left = l + "px";
+                    oBuilding.style.top = t + "px";
+                    this.city3d.appendChild(oBuilding);
+
+                    let b1 = document.createElement("b");
+                    b1.style.width = randomW1 + "px";
+                    oBuilding.appendChild(b1);
+
+                    let b2 = document.createElement("b");
+                    b2.style.width = randomW2 + "px";
+                    b1.appendChild(b2);
+
+                    let b3 = document.createElement("b");
+                    b3.style.width = randomW1 + "px";
+                    b2.appendChild(b3);
+
+                    let b4 = document.createElement("b");
+                    b4.style.width = randomW2 + "px";
+                    b3.appendChild(b4);
+
+                    let oI = document.createElement("i");
+                    oI.style.width = randomW2 + "px";
+                    oI.style.height = randomW1 + "px";
+                    b4.appendChild(oI);
+                }
+            }
+            return {
+                run(base){
+                    new City3d(base).build();
+                }
+            }
+        })().run(15);
+    </script>
+</body>
+</html>
