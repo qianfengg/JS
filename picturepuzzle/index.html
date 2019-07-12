@@ -35,7 +35,7 @@
 <body>
 <div id="box"></div>
 <script>
-    var oBox = document.getElementById("box"),
+    let oBox = document.getElementById("box"),
         aSpan = document.getElementsByTagName("span"),
         w = oBox.offsetWidth,
         h = oBox.offsetHeight,
@@ -59,14 +59,15 @@
             "timg (11)",
             "timg (12)",
             "timg (13)",
-        ];
+        ],
+        flag = true;
 
-    var pictureName = pictureArr[Math.floor(Math.random() * 13)];
-    var oDF = document.createDocumentFragment();
-    for (var i = 0; i < length; i++) {
-        var x = i % xNum;
-        var y = Math.floor(i / xNum);
-        var oSpan = document.createElement("span");
+    let pictureName = pictureArr[Math.floor(Math.random() * 13)];
+    let oDF = document.createDocumentFragment();
+    for (let i = 0; i < length; i++) {
+        let x = i % xNum;
+        let y = Math.floor(i / xNum);
+        let oSpan = document.createElement("span");
         oSpan.style.width = spanW + "px";
         oSpan.style.height = spanH + "px";
         oSpan.style.left = x * spanW + random(-150, 150) + "px";
@@ -78,16 +79,37 @@
     oBox.appendChild(oDF);
 
     window.onload = function () {
-        for (var i = 0; i < aSpan.length; i++) {
-            var x = i % xNum;
-            var y = Math.floor(i / xNum);
-            var oSpan = aSpan[i];
+        getPicture();
+    };
+
+    window.onclick = function(){
+        if(!flag){
+            randomPuzzle();
+        }else{
+            getPicture();
+        }
+    };
+
+    function randomPuzzle(){
+        for (let i = 0; i < aSpan.length; i++) {
+            let x = i % xNum;
+            let y = Math.floor(i / xNum);
+            let oSpan = aSpan[i];
+            oSpan.style.left = x * spanW + random(-150, 150) + "px";
+            oSpan.style.top = y * spanH + random(-150, 150) + "px";
+        }
+        flag = true;
+    }
+
+    function getPicture(){
+        for (let i = 0; i < aSpan.length; i++) {
+            let x = i % xNum;
+            let y = Math.floor(i / xNum);
+            let oSpan = aSpan[i];
             oSpan.style.left = x * spanW + "px";
             oSpan.style.top = y * spanH + "px";
         }
-        setTimeout(function(){
-            window.location.reload();
-        }, 3000)
+        flag = false;
     }
 
     function random(min, max) {
