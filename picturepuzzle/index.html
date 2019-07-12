@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>拼图效果</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link href="" rel="stylesheet">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        #box {
+            position: relative;
+            margin: 100px auto;
+            width: 1024px;
+            height: 576px;
+        }
+
+        span {
+            position: absolute;
+            display: inline-block;
+            top: 0;
+            left: 0;
+            background-size: 1024px 576px;
+            transition: 2s;
+        }
+    </style>
+</head>
+
+<body>
+<div id="box"></div>
+<script>
+    var oBox = document.getElementById("box"),
+        aSpan = document.getElementsByTagName("span"),
+        w = oBox.offsetWidth,
+        h = oBox.offsetHeight,
+        xNum = 32,
+        yNum = 12,
+        length = xNum * yNum,
+        spanW = w / xNum,
+        spanH = h / yNum,
+        pictureArr = [
+            "timg (0)",
+            "timg (1)",
+            "timg (2)",
+            "timg (3)",
+            "timg (4)",
+            "timg (5)",
+            "timg (6)",
+            "timg (7)",
+            "timg (8)",
+            "timg (9)",
+            "timg (10)",
+            "timg (11)",
+            "timg (12)",
+            "timg (13)",
+        ];
+
+    var pictureName = pictureArr[Math.floor(Math.random() * 13)];
+    var oDF = document.createDocumentFragment();
+    for (var i = 0; i < length; i++) {
+        var x = i % xNum;
+        var y = Math.floor(i / xNum);
+        var oSpan = document.createElement("span");
+        oSpan.style.width = spanW + "px";
+        oSpan.style.height = spanH + "px";
+        oSpan.style.left = x * spanW + random(-150, 150) + "px";
+        oSpan.style.top = y * spanH + random(-150, 150) + "px";
+        oSpan.style.backgroundPosition = -x * spanW + 'px ' + (-y * spanH) + 'px';
+        oSpan.style.backgroundImage = "url('./images/"+pictureName+".jpg')";
+        oDF.appendChild(oSpan)
+    }
+    oBox.appendChild(oDF);
+
+    window.onload = function () {
+        for (var i = 0; i < aSpan.length; i++) {
+            var x = i % xNum;
+            var y = Math.floor(i / xNum);
+            var oSpan = aSpan[i];
+            oSpan.style.left = x * spanW + "px";
+            oSpan.style.top = y * spanH + "px";
+        }
+        setTimeout(function(){
+            window.location.reload();
+        }, 3000)
+    }
+
+    function random(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+</script>
+</body>
+
+</html>
