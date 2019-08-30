@@ -256,7 +256,7 @@
         addEvent() {
             this.openAuto();
             $(".wrap")[0].onmouseover = () => {
-				console.log("关闭")
+				// console.log("关闭")
                 window.clearInterval(this.timer);
             };
             $(".wrap")[0].onmouseout = () => {
@@ -266,7 +266,7 @@
         }
 
         openAuto() {
-			console.log("打开")
+			// console.log("打开")
             this.timer = window.setInterval(() => {
                 this.clickRight();
             }, this.duration);
