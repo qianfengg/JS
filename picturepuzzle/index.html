@@ -1,121 +1,282 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>拼图效果</title>
-    <meta name="description" content="">
-    <meta name="keywords" content="">
-    <link href="" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
     <style>
         * {
-            padding: 0;
             margin: 0;
+            padding: 0;
         }
 
-        #box {
-            position: relative;
-            margin: 100px auto;
-            width: 1024px;
-            height: 576px;
+        body{
+            overflow: hidden;
         }
 
-        span {
+        a {
+            text-decoration: none;
+        }
+
+        .wrap {
+            width: 1000px;
+            height: 800px;
+            background: url(img/bg.jpg) no-repeat;
             position: absolute;
-            display: inline-block;
-            top: 0;
+            left: 50%;
+            top: 50%;
+            margin-left: -500px;
+            margin-top: -400px;
+        }
+
+        #prev, #next {
+            position: absolute;
+            width: 25px;
+            height: 45px;
+            background: url(img/ar.png) no-repeat;
+
+            top: 155px;
+        }
+
+        #prev {
+            left: 13px;
+        }
+
+        #next {
+            transform: rotate(180deg);
+            right: 13px;
+        }
+
+        .pic {
+            width: 536px;
+            height: 356px;
+            position: absolute;
+            top: 170px;
+            left: 297px;
+        }
+
+        #img {
+            position: relative;
+            vertical-align: top;
+            width: 536px;
+            height: 356px;
+        }
+
+        #txt {
+            width: 536px;
+            height: 71px;
+            position: absolute;
+            left: 297px;
+            bottom: 185px;
+            text-align: center;
+            font: 20px/71px "微软雅黑";
+            color: #666;
+        }
+
+        #navs {
+            position: absolute;
             left: 0;
-            background-size: 1024px 576px;
-            transition: 2s;
+            bottom: 10px;
+            z-index: 10;
+            width: 100%;
+            text-align: center;
+        }
+
+        #navs a {
+            margin: 0 3px;
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+        }
+
+        #navs img {
+            position: absolute;
+            left: -17px;
+            top: -35px;
+            width: 40px;
+            display: none;
+            border: 2px solid #fff;
+        }
+
+        #navs .active {
+            background: #f60;
+        }
+
+        @keyframes showPuzzle{
+            to{opacity: 1}
         }
     </style>
 </head>
-
 <body>
-<div id="box"></div>
+<div class="wrap">
+    <div class="pic">
+        <div id="img"></div>
+        <a id="prev" href="javascript:;"></a>
+        <a id="next" href="javascript:;"></a>
+        <nav id="navs">
+            <a class="active">
+                <img class="img" src="img/img1.jpg" alt="">
+            </a>
+            <a>
+                <img class="img" src="img/img2.jpg" alt="">
+            </a>
+            <a>
+                <img class="img" src="img/img3.jpg" alt="">
+            </a>
+            <a>
+                <img class="img" src="img/img4.jpg" alt="">
+            </a>
+            <a>
+                <img class="img" src="img/img5.jpg" alt="">
+            </a>
+        </nav>
+    </div>
+    <p id="txt">这是第 <span>1</span> 张图片</p>
+</div>
 <script>
-    let oBox = document.getElementById("box"),
-        aSpan = document.getElementsByTagName("span"),
-        w = oBox.offsetWidth,
-        h = oBox.offsetHeight,
-        xNum = 32,
-        yNum = 12,
-        length = xNum * yNum,
-        spanW = w / xNum,
-        spanH = h / yNum,
-        pictureArr = [
-            "timg (0)",
-            "timg (1)",
-            "timg (2)",
-            "timg (3)",
-            "timg (4)",
-            "timg (5)",
-            "timg (6)",
-            "timg (7)",
-            "timg (8)",
-            "timg (9)",
-            "timg (10)",
-            "timg (11)",
-            "timg (12)",
-            "timg (13)",
-        ],
-        flag = true;
+    const {floor, random} = Math;
+    const randomRange = (min, max) => random() * (max - min) + min;
+    const $ = (selector) => document.querySelectorAll(selector);
+    const imgArr = ["img/img1.jpg", "img/img2.jpg", "img/img3.jpg", "img/img4.jpg", "img/img5.jpg"];
+    const imgWidth = 536;
+    const imgHeight = 356;
+    const rows = 32;
+    const cols = 32;
+    const spanLength = rows * cols;
+    const spanWidth = imgWidth / cols;
+    const spanHeight = imgHeight / rows;
 
-    let pictureName = pictureArr[Math.floor(Math.random() * 13)];
-    let oDF = document.createDocumentFragment();
-    for (let i = 0; i < length; i++) {
-        let x = i % xNum;
-        let y = Math.floor(i / xNum);
-        let oSpan = document.createElement("span");
-        oSpan.style.width = spanW + "px";
-        oSpan.style.height = spanH + "px";
-        oSpan.style.left = x * spanW + random(-150, 150) + "px";
-        oSpan.style.top = y * spanH + random(-150, 150) + "px";
-        oSpan.style.backgroundPosition = -x * spanW + 'px ' + (-y * spanH) + 'px';
-        oSpan.style.backgroundImage = "url('./images/"+pictureName+".jpg')";
-        oDF.appendChild(oSpan)
-    }
-    oBox.appendChild(oDF);
-
-    window.onload = function () {
-        getPicture();
-    };
-
-    window.onclick = function(){
-        if(!flag){
-            randomPuzzle();
-        }else{
-            getPicture();
+    class Tab {
+        constructor(txtSelector, divSelector, dotListSelector) {
+            this.txt = $(txtSelector)[0];
+            this.div = $(divSelector)[0];
+            this.dotList = $(dotListSelector);
+            this.index = 0;
         }
-    };
 
-    function randomPuzzle(){
-        for (let i = 0; i < aSpan.length; i++) {
-            let x = i % xNum;
-            let y = Math.floor(i / xNum);
-            let oSpan = aSpan[i];
-            oSpan.style.left = x * spanW + random(-150, 150) + "px";
-            oSpan.style.top = y * spanH + random(-150, 150) + "px";
+        run() {
+            this.load();
+            this.addEvent();
         }
-        flag = true;
-    }
 
-    function getPicture(){
-        for (let i = 0; i < aSpan.length; i++) {
-            let x = i % xNum;
-            let y = Math.floor(i / xNum);
-            let oSpan = aSpan[i];
-            oSpan.style.left = x * spanW + "px";
-            oSpan.style.top = y * spanH + "px";
+        load(){
+            const aSpan = $(".puzzle");
+            [...aSpan].forEach(item => {
+                this.div.removeChild(item);
+            });
+            const df = document.createDocumentFragment();
+            for (let i = 0; i < spanLength; i++) {
+                let x = i % cols;
+                let y = floor(i / cols);
+                let oSpan = document.createElement("span");
+                oSpan.className = "puzzle";
+                oSpan.style.position = "absolute";
+                oSpan.style.width = spanWidth + "px";
+                oSpan.style.height = spanHeight + "px";
+                oSpan.style.backgroundImage = `url(${imgArr[this.index]})`;
+                oSpan.style.backgroundPosition = `-${x * spanWidth}px -${y * spanHeight}px`;
+                oSpan.style.left = spanWidth * x + "px";
+                oSpan.style.top = spanHeight * y + "px";
+                oSpan.style.opacity = "0";
+                oSpan.style.animation = `1s ${randomRange(0, 1)}s showPuzzle linear forwards`;
+                df.appendChild(oSpan);
+            }
+            this.div.appendChild(df);
         }
-        flag = false;
+
+        addEvent() {
+            for (let i = 0,l=imgArr.length; i < l; i++) {
+                this.dotList[i].onmouseover = function(){
+                    this.querySelector("img").style.display = "block";
+                };
+                this.dotList[i].onmouseout = function(){
+                    this.querySelector("img").style.display = "none";
+                };
+                this.dotList[i].onclick = () => {
+                    this.index = i;
+                    this.changeDom();
+                }
+            }
+        }
+
+        changeDom() {
+            this.load();
+            for (let i = 0; i < imgArr.length; i++) {
+                this.dotList[i].classList.remove("active");
+            }
+            this.dotList[this.index].classList.add("active");
+            this.txt.querySelector("span").innerText = (this.index + 1);
+            return this;
+        }
     }
 
-    function random(min, max) {
-        return Math.random() * (max - min) + min;
+    class ArrowTab extends Tab {
+        constructor(txtSelector, divSelector, dotListSelector, arrowSelector) {
+            super(txtSelector, divSelector, dotListSelector);
+            this.arrowSelector = $(arrowSelector);
+        }
+
+        addEvent() {
+            this.arrowSelector[0].onclick = () => {
+                this.clickLeft();
+            };
+            this.arrowSelector[1].onclick =  () => {
+                this.clickRight();
+            };
+            super.addEvent();
+        }
+
+        clickLeft() {
+            this.index--;
+            if (this.index === -1) {
+                this.index = imgArr.length - 1;
+            }
+            this.changeDom();
+        }
+
+        clickRight() {
+            this.index++;
+            this.index %= imgArr.length;
+            this.changeDom();
+        }
     }
+
+    class AutoTab extends ArrowTab {
+        constructor(txtSelector, divSelector, dotListSelector, arrowSelector, duration = 3000) {
+            super(txtSelector, divSelector, dotListSelector, arrowSelector);
+            this.duration = duration;
+            this.timer = 0;//定时器
+        }
+
+        addEvent() {
+            this.openAuto();
+            $(".wrap")[0].onmouseover = () => {
+				console.log("关闭")
+                window.clearInterval(this.timer);
+            };
+            $(".wrap")[0].onmouseout = () => {
+                this.openAuto();
+            };
+            super.addEvent();
+        }
+
+        openAuto() {
+			console.log("打开")
+            this.timer = window.setInterval(() => {
+                this.clickRight();
+            }, this.duration);
+        }
+    }
+
+    // new Tab("#txt", "#img", "#navs > a").run();
+    // new ArrowTab("#txt", "#img", "#navs a", ".pic > a").run();
+    new AutoTab("#txt", "#img", "#navs a", ".pic > a").run();
+
 </script>
 </body>
-
 </html>
