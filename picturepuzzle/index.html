@@ -151,7 +151,16 @@
     const spanWidth = imgWidth / cols;
     const spanHeight = imgHeight / rows;
 
+    /**
+     * 模板方法模式,原型模式，Tab-基类选项卡，主要功能: 点击小圆点切换图片
+     */
     class Tab {
+        /**
+         *
+         * @param txtSelector 文字描述的div，该案例指的是"这是第 n 张图片"
+         * @param divSelector 展示图片的div
+         * @param dotListSelector 小圆点的集合
+         */
         constructor(txtSelector, divSelector, dotListSelector) {
             this.txt = $(txtSelector)[0];
             this.div = $(divSelector)[0];
@@ -215,7 +224,17 @@
         }
     }
 
+    /**
+     *  ArrowTab - 可点击左右箭头切换的Tab
+     */
     class ArrowTab extends Tab {
+        /**
+         *
+         * @param txtSelector 文字描述的div，该案例指的是"这是第 n 张图片"
+         * @param divSelector 展示图片的div
+         * @param dotListSelector 小圆点的集合
+         * @param arrowSelector 左右箭头，注意这边封装的，左箭头在该集合[0],右箭头在该集合[1]
+         */
         constructor(txtSelector, divSelector, dotListSelector, arrowSelector) {
             super(txtSelector, divSelector, dotListSelector);
             this.arrowSelector = $(arrowSelector);
@@ -233,7 +252,7 @@
 
         clickLeft() {
             this.index--;
-            if (this.index === -1) {
+            if (this.index < 0) {
                 this.index = imgArr.length - 1;
             }
             this.changeDom();
@@ -246,27 +265,38 @@
         }
     }
 
+    /**
+     *  AutoTab - 自动轮播切换的Tab
+     */
     class AutoTab extends ArrowTab {
-        constructor(txtSelector, divSelector, dotListSelector, arrowSelector, duration = 3000) {
+        /**
+         *
+         * @param txtSelector 文字描述的div，该案例指的是"这是第 n 张图片"
+         * @param divSelector 展示图片的div
+         * @param dotListSelector 小圆点的集合
+         * @param arrowSelector 左右箭头，注意这边封装的，左箭头在该集合[0],右箭头在该集合[1]
+         * @param wrapSelector 包在外面最大的盒子，用于鼠标移出/移入-停止定时器/开启定时器
+         * @param duration 轮播间隔
+         */
+        constructor(txtSelector, divSelector, dotListSelector, arrowSelector, wrapSelector, duration = 3000) {
             super(txtSelector, divSelector, dotListSelector, arrowSelector);
+            this.wrapSelector = $(wrapSelector)[0];
             this.duration = duration;
             this.timer = 0;//定时器
         }
 
         addEvent() {
             this.openAuto();
-            $(".wrap")[0].onmouseover = () => {
-				// console.log("关闭")
+            this.wrapSelector.onmouseover = () => {
                 window.clearInterval(this.timer);
             };
-            $(".wrap")[0].onmouseout = () => {
+            this.wrapSelector.onmouseout = () => {
                 this.openAuto();
             };
             super.addEvent();
         }
 
         openAuto() {
-			// console.log("打开")
             this.timer = window.setInterval(() => {
                 this.clickRight();
             }, this.duration);
@@ -275,7 +305,7 @@
 
     // new Tab("#txt", "#img", "#navs > a").run();
     // new ArrowTab("#txt", "#img", "#navs a", ".pic > a").run();
-    new AutoTab("#txt", "#img", "#navs a", ".pic > a").run();
+    new AutoTab("#txt", "#img", "#navs a", ".pic > a", ".wrap").run();
 
 </script>
 </body>
