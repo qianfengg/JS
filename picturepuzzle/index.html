@@ -168,6 +168,18 @@
             this.index = 0;
         }
 
+        /**
+         *  优化！可初始化第几张图
+         * @param index 索引
+         * @returns {Tab} 为了链式操作，如new Tab(...).init(2).run()
+         */
+        init(index = 0){
+            if(index < 0 || index > this.dotList.length - 1) return this;
+            this.index = index;
+            this.changeDom();
+            return this;
+        }
+
         run() {
             this.load();
             this.addEvent();
@@ -305,7 +317,7 @@
 
     // new Tab("#txt", "#img", "#navs > a").run();
     // new ArrowTab("#txt", "#img", "#navs a", ".pic > a").run();
-    new AutoTab("#txt", "#img", "#navs a", ".pic > a", ".wrap").run();
+    new AutoTab("#txt", "#img", "#navs a", ".pic > a", ".wrap").init(2).run();
 
 </script>
 </body>
