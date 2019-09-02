@@ -139,186 +139,187 @@
     <p id="txt">这是第 <span>1</span> 张图片</p>
 </div>
 <script>
-    const {floor, random} = Math;
-    const randomRange = (min, max) => random() * (max - min) + min;
-    const $ = (selector) => document.querySelectorAll(selector);
-    const imgArr = ["img/img1.jpg", "img/img2.jpg", "img/img3.jpg", "img/img4.jpg", "img/img5.jpg"];
-    const imgWidth = 536;
-    const imgHeight = 356;
-    const rows = 32;
-    const cols = 32;
-    const spanLength = rows * cols;
-    const spanWidth = imgWidth / cols;
-    const spanHeight = imgHeight / rows;
-
-    /**
-     * 模板方法模式,原型模式，Tab-基类选项卡，主要功能: 点击小圆点切换图片
-     */
-    class Tab {
-        /**
-         *
-         * @param txtSelector 文字描述的div，该案例指的是"这是第 n 张图片"
-         * @param divSelector 展示图片的div
-         * @param dotListSelector 小圆点的集合
-         */
-        constructor(txtSelector, divSelector, dotListSelector) {
-            this.txt = $(txtSelector)[0];
-            this.div = $(divSelector)[0];
-            this.dotList = $(dotListSelector);
-            this.index = 0;
-        }
+    window.onload = function(){
+        const {floor, random} = Math;
+        const randomRange = (min, max) => random() * (max - min) + min;
+        const $ = (selector) => document.querySelectorAll(selector);
+        const imgArr = ["img/img1.jpg", "img/img2.jpg", "img/img3.jpg", "img/img4.jpg", "img/img5.jpg"];
+        const imgWidth = 536;
+        const imgHeight = 356;
+        const rows = 32;
+        const cols = 32;
+        const spanLength = rows * cols;
+        const spanWidth = imgWidth / cols;
+        const spanHeight = imgHeight / rows;
 
         /**
-         *  优化！可初始化第几张图
-         * @param index 索引
-         * @returns {Tab} 为了链式操作，如new Tab(...).init(2).run()
+         * 模板方法模式,原型模式，Tab-基类选项卡，主要功能: 点击小圆点切换图片
          */
-        init(index = 0){
-            if(index < 0 || index > this.dotList.length - 1) return this;
-            this.index = index;
-            this.changeDom();
-            return this;
-        }
-
-        run() {
-            this.load();
-            this.addEvent();
-        }
-
-        load(){
-            const aSpan = $(".puzzle");
-            [...aSpan].forEach(item => {
-                this.div.removeChild(item);
-            });
-            const df = document.createDocumentFragment();
-            for (let i = 0; i < spanLength; i++) {
-                let x = i % cols;
-                let y = floor(i / cols);
-                let oSpan = document.createElement("span");
-                oSpan.className = "puzzle";
-                oSpan.style.position = "absolute";
-                oSpan.style.width = spanWidth + "px";
-                oSpan.style.height = spanHeight + "px";
-                oSpan.style.backgroundImage = `url(${imgArr[this.index]})`;
-                oSpan.style.backgroundPosition = `-${x * spanWidth}px -${y * spanHeight}px`;
-                oSpan.style.left = spanWidth * x + "px";
-                oSpan.style.top = spanHeight * y + "px";
-                oSpan.style.opacity = "0";
-                oSpan.style.animation = `1s ${randomRange(0, 1)}s showPuzzle linear forwards`;
-                df.appendChild(oSpan);
+        class Tab {
+            /**
+             *
+             * @param txtSelector 文字描述的div，该案例指的是"这是第 n 张图片"
+             * @param divSelector 展示图片的div
+             * @param dotListSelector 小圆点的集合
+             */
+            constructor(txtSelector, divSelector, dotListSelector) {
+                this.txt = $(txtSelector)[0];
+                this.div = $(divSelector)[0];
+                this.dotList = $(dotListSelector);
+                this.index = 0;
             }
-            this.div.appendChild(df);
-        }
 
-        addEvent() {
-            for (let i = 0; i < imgArr.length; i++) {
-                this.dotList[i].onmouseover = function(){
-                    this.querySelector("img").style.display = "block";
-                };
-                this.dotList[i].onmouseout = function(){
-                    this.querySelector("img").style.display = "none";
-                };
-                this.dotList[i].onclick = () => {
-                    this.index = i;
-                    this.changeDom();
+            /**
+             *  优化！可初始化第几张图
+             * @param index 索引
+             * @returns {Tab} 为了链式操作，如new Tab(...).init(2).run()
+             */
+            init(index = 0){
+                if(index < 0 || index > this.dotList.length - 1) return this;
+                this.index = index;
+                this.changeDom();
+                return this;
+            }
+
+            run() {
+                this.load();
+                this.addEvent();
+            }
+
+            load(){
+                const aSpan = $(".puzzle");
+                [...aSpan].forEach(item => {
+                    this.div.removeChild(item);
+                });
+                const df = document.createDocumentFragment();
+                for (let i = 0; i < spanLength; i++) {
+                    let x = i % cols;
+                    let y = floor(i / cols);
+                    let oSpan = document.createElement("span");
+                    oSpan.className = "puzzle";
+                    oSpan.style.position = "absolute";
+                    oSpan.style.width = spanWidth + "px";
+                    oSpan.style.height = spanHeight + "px";
+                    oSpan.style.backgroundImage = `url(${imgArr[this.index]})`;
+                    oSpan.style.backgroundPosition = `-${x * spanWidth}px -${y * spanHeight}px`;
+                    oSpan.style.left = spanWidth * x + "px";
+                    oSpan.style.top = spanHeight * y + "px";
+                    oSpan.style.opacity = "0";
+                    oSpan.style.animation = `1s ${randomRange(0, 1)}s showPuzzle linear forwards`;
+                    df.appendChild(oSpan);
+                }
+                this.div.appendChild(df);
+            }
+
+            addEvent() {
+                for (let i = 0; i < imgArr.length; i++) {
+                    this.dotList[i].onmouseover = function(){
+                        this.querySelector("img").style.display = "block";
+                    };
+                    this.dotList[i].onmouseout = function(){
+                        this.querySelector("img").style.display = "none";
+                    };
+                    this.dotList[i].onclick = () => {
+                        this.index = i;
+                        this.changeDom();
+                    }
                 }
             }
-        }
 
-        changeDom() {
-            this.load();
-            for (let i = 0; i < imgArr.length; i++) {
-                this.dotList[i].classList.remove("active");
+            changeDom() {
+                this.load();
+                for (let i = 0; i < imgArr.length; i++) {
+                    this.dotList[i].classList.remove("active");
+                }
+                this.dotList[this.index].classList.add("active");
+                this.txt.querySelector("span").innerText = (this.index + 1);
+                return this;
             }
-            this.dotList[this.index].classList.add("active");
-            this.txt.querySelector("span").innerText = (this.index + 1);
-            return this;
         }
-    }
 
-    /**
-     *  ArrowTab - 可点击左右箭头切换的Tab
-     */
-    class ArrowTab extends Tab {
         /**
-         *
-         * @param txtSelector 文字描述的div，该案例指的是"这是第 n 张图片"
-         * @param divSelector 展示图片的div
-         * @param dotListSelector 小圆点的集合
-         * @param arrowSelector 左右箭头，注意这边封装的，左箭头在该集合[0],右箭头在该集合[1]
+         *  ArrowTab - 可点击左右箭头切换的Tab
          */
-        constructor(txtSelector, divSelector, dotListSelector, arrowSelector) {
-            super(txtSelector, divSelector, dotListSelector);
-            this.arrowSelector = $(arrowSelector);
-        }
-
-        addEvent() {
-            this.arrowSelector[0].onclick = () => {
-                this.clickLeft();
-            };
-            this.arrowSelector[1].onclick =  () => {
-                this.clickRight();
-            };
-            super.addEvent();
-        }
-
-        clickLeft() {
-            this.index--;
-            if (this.index < 0) {
-                this.index = imgArr.length - 1;
+        class ArrowTab extends Tab {
+            /**
+             *
+             * @param txtSelector 文字描述的div，该案例指的是"这是第 n 张图片"
+             * @param divSelector 展示图片的div
+             * @param dotListSelector 小圆点的集合
+             * @param arrowSelector 左右箭头，注意这边封装的，左箭头在该集合[0],右箭头在该集合[1]
+             */
+            constructor(txtSelector, divSelector, dotListSelector, arrowSelector) {
+                super(txtSelector, divSelector, dotListSelector);
+                this.arrowSelector = $(arrowSelector);
             }
-            this.changeDom();
+
+            addEvent() {
+                this.arrowSelector[0].onclick = () => {
+                    this.clickLeft();
+                };
+                this.arrowSelector[1].onclick =  () => {
+                    this.clickRight();
+                };
+                super.addEvent();
+            }
+
+            clickLeft() {
+                this.index--;
+                if (this.index < 0) {
+                    this.index = imgArr.length - 1;
+                }
+                this.changeDom();
+            }
+
+            clickRight() {
+                this.index++;
+                this.index %= imgArr.length;
+                this.changeDom();
+            }
         }
 
-        clickRight() {
-            this.index++;
-            this.index %= imgArr.length;
-            this.changeDom();
-        }
-    }
-
-    /**
-     *  AutoTab - 自动轮播切换的Tab
-     */
-    class AutoTab extends ArrowTab {
         /**
-         *
-         * @param txtSelector 文字描述的div，该案例指的是"这是第 n 张图片"
-         * @param divSelector 展示图片的div
-         * @param dotListSelector 小圆点的集合
-         * @param arrowSelector 左右箭头，注意这边封装的，左箭头在该集合[0],右箭头在该集合[1]
-         * @param wrapSelector 包在外面最大的盒子，用于鼠标移出/移入-停止定时器/开启定时器
-         * @param duration 轮播间隔
+         *  AutoTab - 自动轮播切换的Tab
          */
-        constructor(txtSelector, divSelector, dotListSelector, arrowSelector, wrapSelector, duration = 3000) {
-            super(txtSelector, divSelector, dotListSelector, arrowSelector);
-            this.wrapSelector = $(wrapSelector)[0];
-            this.duration = duration;
-            this.timer = 0;//定时器
-        }
+        class AutoTab extends ArrowTab {
+            /**
+             *
+             * @param txtSelector 文字描述的div，该案例指的是"这是第 n 张图片"
+             * @param divSelector 展示图片的div
+             * @param dotListSelector 小圆点的集合
+             * @param arrowSelector 左右箭头，注意这边封装的，左箭头在该集合[0],右箭头在该集合[1]
+             * @param wrapSelector 包在外面最大的盒子，用于鼠标移出/移入-停止定时器/开启定时器
+             * @param duration 轮播间隔
+             */
+            constructor(txtSelector, divSelector, dotListSelector, arrowSelector, wrapSelector, duration = 3000) {
+                super(txtSelector, divSelector, dotListSelector, arrowSelector);
+                this.wrapSelector = $(wrapSelector)[0];
+                this.duration = duration;
+                this.timer = 0;//定时器
+            }
 
-        addEvent() {
-            this.openAuto();
-            this.wrapSelector.onmouseover = () => {
-                window.clearInterval(this.timer);
-            };
-            this.wrapSelector.onmouseout = () => {
+            addEvent() {
                 this.openAuto();
-            };
-            super.addEvent();
+                this.wrapSelector.onmouseover = () => {
+                    window.clearInterval(this.timer);
+                };
+                this.wrapSelector.onmouseout = () => {
+                    this.openAuto();
+                };
+                super.addEvent();
+            }
+
+            openAuto() {
+                this.timer = window.setInterval(() => {
+                    this.clickRight();
+                }, this.duration);
+            }
         }
 
-        openAuto() {
-            this.timer = window.setInterval(() => {
-                this.clickRight();
-            }, this.duration);
-        }
-    }
-
-    // new Tab("#txt", "#img", "#navs > a").run();
-    // new ArrowTab("#txt", "#img", "#navs a", ".pic > a").run();
-    new AutoTab("#txt", "#img", "#navs a", ".pic > a", ".wrap").init(2).run();
-
+        // new Tab("#txt", "#img", "#navs > a").run();
+        // new ArrowTab("#txt", "#img", "#navs a", ".pic > a").run();
+        new AutoTab("#txt", "#img", "#navs a", ".pic > a", ".wrap").init(2).run();
+    };
 </script>
 </body>
 </html>
