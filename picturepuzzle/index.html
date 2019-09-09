@@ -309,7 +309,8 @@
         }
 
         openAuto() {
-            this.timer = window.setInterval(() => {
+            clearInterval(this.timer);
+            this.timer = setInterval(() => {
                 this.clickRight();
             }, this.duration);
         }
